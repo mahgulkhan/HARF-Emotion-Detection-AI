@@ -1,0 +1,9 @@
+data/raw/*.txt
+data/raw/*.csv
+data/*.csv
+hf_cache/
+__pycache__/
+*.pyc
+.venv/
+venv/
+temp_uploaded_chat.txt
