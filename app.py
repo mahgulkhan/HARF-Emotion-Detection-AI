@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from whatsapp_parser import parse_chat
 from predict import predict_batch, predict_emotion, load_model
 
-st.set_page_config(page_title="harf | حرف", page_icon="\u2726", layout="wide")
+st.set_page_config(page_title="harf-حرف", page_icon="\u2726", layout="wide")
 
 # ---------------- Background image (embedded so it works locally AND once deployed) ----------------
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -59,6 +59,11 @@ span[class*="material-symbols"] {{
     font-family: "Material Symbols Rounded", "Material Symbols Outlined", "Material Icons" !important;
 }}
 
+div[data-testid="stTextInput"] input{{
+    font-size: 1.5rem !important;
+    padding: 0.8rem !important;
+    height: auto !important;
+}}
 {bg_css}
 
 [data-testid="stAppViewContainer"] .main .block-container {{
@@ -70,12 +75,31 @@ span[class*="material-symbols"] {{
     max-width: 1100px;
 }}
 
+[data-testid="stHeader"] {{
+    background-color: #EDDBBE  !important;
+    position: relative;
+}}
+
+[data-testid="stHeader"]::before {{
+    content: "حرف - Roman Urdu Emotion Detector AI";
+    color: #6D2E32;
+    font-size: 1.7rem;
+    font-family: 'Katibeh', -apple-system, sans-serif;
+    letter-spacing: 0.03em;
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+}}
+
 .harf-header {{
     text-align: center;
     padding: 1rem 0 0.6rem 0;
     border-bottom: 2px solid #B76E27;
     margin-bottom: 1.5rem;
 }}
+
 .harf-title-en {{
     font-size: 5.5rem !important;
     font-weight: 400 !important;

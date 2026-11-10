@@ -3,6 +3,7 @@ Baseline Roman Urdu / English code-switched emotion classifier.
 
 Usage:
     python train_dataset.py --data path/to/dataset.csv --augment path/to/augment.csv
+    python train_dataset.py --data path/to/dataset.csv --data2 path/to/second_dataset.csv --augment path/to/augment.csv
 """
 import argparse
 import os
@@ -45,7 +46,7 @@ def clean_text(s: str) -> str:
     return s
 
 
-def load_data(path, text_col, label_col):
+def load_data(path, text_col, label_col, drop_labels=None):
     df = pd.read_csv(path)
     if text_col is None:
         text_col = autodetect_column(df.columns, TEXT_CANDIDATES)
@@ -60,6 +61,10 @@ def load_data(path, text_col, label_col):
     print(f"Using text column: '{text_col}'  |  label column: '{label_col}'")
     df = df[[text_col, label_col]].dropna()
     df.columns = ["text", "emotion"]
+
+    if drop_labels:
+        df = df[~df["emotion"].isin(drop_labels)]
+
     df["text"] = df["text"].apply(clean_text)
     df = df[df["text"].str.len() > 0]
     return df
@@ -77,6 +82,8 @@ def balance_classes(df, target_count=2000):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", required=True, help="Path to CSV dataset")
+    parser.add_argument("--data2", default=None, help="Optional second CSV dataset to merge with --data before splitting")
+    parser.add_argument("--drop_labels", default=None, help="Comma-separated labels to drop from --data2 (e.g. 'Disgust')")
     parser.add_argument("--augment", default=None, help="Optional path to a small hand-crafted CSV (text,emotion) merged into the TRAINING split only")
     parser.add_argument("--text_col", default=None)
     parser.add_argument("--label_col", default=None)
@@ -86,7 +93,15 @@ def main():
     parser.add_argument("--target_count", type=int, default=2000)
     args = parser.parse_args()
 
+    drop_labels = [l.strip() for l in args.drop_labels.split(",")] if args.drop_labels else None
+
     df = load_data(args.data, args.text_col, args.label_col)
+
+    if args.data2:
+        df2 = load_data(args.data2, args.text_col, args.label_col, drop_labels=drop_labels)
+        print(f"\nMerging {len(df2)} rows from --data2 into main dataset.")
+        df = pd.concat([df, df2], ignore_index=True)
+
     print(f"\nLoaded {len(df)} rows after cleaning.")
     print("\nClass distribution (full dataset):")
     print(df["emotion"].value_counts())
