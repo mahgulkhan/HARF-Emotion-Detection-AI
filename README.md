@@ -73,8 +73,8 @@ Harf/
 
 ```bash
 # 1. Clone the repository
-git clone <https://github.com/mahgulkhan/HARF-Emotion-Detection-AI>
-cd Harf
+git clone https://github.com/mahgulkhan/HARF-Emotion-Detection-AI.git
+cd HARF-Emotion-Detection-AI
 
 # 2. (Recommended) Create a virtual environment
 python -m venv venv
